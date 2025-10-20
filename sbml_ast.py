@@ -1,3 +1,5 @@
+#Ryan Xing 116607537
+
 class SemanticError(Exception):
   def __init__(self, message=None):
     super().__init__(message)
@@ -8,6 +10,7 @@ class SemanticError(Exception):
   def __repr__(self):
     return "SEMANTIC ERROR"
 
+#type check helper methods 
 def _is_int(x): return isinstance(x, int) and not isinstance(x, bool)
 def _is_num(x): return isinstance(x, (int, float)) and not isinstance(x, bool)
 def _is_str(x): return isinstance(x, str)
@@ -15,9 +18,11 @@ def _is_bool(x): return isinstance(x, bool)
 def _is_List(x): return isinstance(x, list)
 def _is_tuple(x): return isinstance(x, tuple)
 
+#helper methods for spacing in __str__ methods
 def tabs(n): 
   return "\t"*n
 
+#base node class
 class Node:
   def __init__(self):
     self.parent = None
@@ -86,6 +91,7 @@ class Tuple(Node):
     lines.append(tabs(pc)+")")
     return "\n".join(lines)
   
+#handles all binary operators
 class BinOp(Node):
   def __init__(self, operator, left, right):
     super().__init__(); 
@@ -94,6 +100,7 @@ class BinOp(Node):
     self.right = right
     self.left.parent = self; 
     self.right.parent = self
+  #checks operator and typechecks then returns evlauted value or raises a semantic error
   def evaluate(self): 
     left_value = self.left.evaluate()
     right_value = self.right.evaluate()
@@ -236,12 +243,14 @@ class BinOp(Node):
     ]
     return "\n".join(lines)
     
+#handles all unary operators
 class UnaryOp(Node):
   def __init__(self, operator, operand):
     super().__init__(); 
     self.operator = operator; 
     self.operand = operand
     self.operand.parent = self
+  #checks for operator and typechecks returns evaluated value or raises semantic error
   def evaluate(self):
       value = self.operand.evaluate()
 
@@ -274,9 +283,10 @@ class Index(Node):
     index_value = self.index.evaluate()
     sequence_value = self.sequence.evaluate()
 
+#typechecks and then checks for index returns value at the index or raises semantic error
     if _is_int(index_value):
       if _is_str(sequence_value):
-        if index_value < 0 or index_value >= len(sequence_value):
+        if index_value < 0 or index_value >= len(sequence_value): 
           raise SemanticError("Index out of bounds")
         return sequence_value[index_value]
       elif _is_List(sequence_value):
