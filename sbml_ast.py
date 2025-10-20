@@ -15,54 +15,85 @@ def _is_bool(x): return isinstance(x, bool)
 def _is_List(x): return isinstance(x, list)
 def _is_tuple(x): return isinstance(x, tuple)
 
+def tabs(n): 
+  return "\t"*n
+
 class Node:
+  def __init__(self):
+    self.parent = None
+  def parentCount(self):
+        count = 0
+        current = self.parent
+        while current is not None:
+            count += 1
+            current = current.parent
+        return count
   def evaluate(self): raise NotImplementedError()
   def __str__(self):
-    return self.__class__.__name__
+    return tabs(self.parentCount())+self.__class__.__name__
   
 class Int(Node):
-  def __init__(self, v): self.value = int(v)
+  def __init__(self, v): 
+    super().__init__()
+    self.value = int(v)
   def evaluate(self): return self.value
   def __str__(self):
-    return  f"Int({self.value})"
+    return  tabs(self.parentCount())+f"Int({self.value})"
 
 class Real(Node):
-  def __init__(self, v): self.value = float(v)
+  def __init__(self, v): 
+    super().__init__()
+    self.value = float(v)
   def evaluate(self): return self.value
   def __str__(self):
-    return  f"Real({self.value})"
+    return  tabs(self.parentCount())+f"Real({self.value})"
 
 class String(Node):
     def __init__(self, s): self.value = str(s)
     def evaluate(self):  return self.value
     def __str__(self):   
-      return f"String('{self.value}')"
+      return tabs(self.parentCount())+f"String('{self.value}')"
 
 class Bool(Node):
     def __init__(self, b): self.value = bool(b)
     def evaluate(self): return self.value
     def __str__(self):     
-      return f"Bool({self.value})"
+      return tabs(self.parentCount())+f"Bool({self.value})"
     
 class List(Node):
-  def __init__(self, element_nodes): self.value = element_nodes
+  def __init__(self, element_nodes): 
+    super().__init__(); self.value = element_nodes
+    for e in self.value: e.parent = self
   def evaluate(self): return [e.evaluate() for e in self.value]
   def __str__(self):
-    elements_str = ', '.join(str(node) for node in self.value)
-    return f"List[{elements_str}]"
+    pc = self.parentCount()
+    if not self.value: 
+      return tabs(pc)+"List[]"
+    lines = [tabs(pc)+"List["]
+    for e in self.value: lines.append(str(e))
+    lines.append(tabs(pc)+"]")
+    return "\n".join(lines)
 
 class Tuple(Node):
-  def __init__(self, element_nodes): self.value = element_nodes
+  def __init__(self, element_nodes): 
+    super().__init__(); self.value = element_nodes
+    for e in self.value: e.parent = self
   def evaluate(self): return tuple([e.evaluate() for e in self.value])
   def __str__(self):
-    elements_str = ', '.join(str(node) for node in self.value)
-    return f"Tuple({elements_str})"
+    pc = self.parentCount()
+    lines = [tabs(pc)+"Tuple("]
+    for e in self.value: lines.append(str(e))
+    lines.append(tabs(pc)+")")
+    return "\n".join(lines)
   
 class BinOp(Node):
   def __init__(self, operator, left, right):
-    self.operator = operator
-    self.left = left
+    super().__init__(); 
+    self.operator = operator; 
+    self.left = left; 
     self.right = right
+    self.left.parent = self; 
+    self.right.parent = self
   def evaluate(self): 
     left_value = self.left.evaluate()
     right_value = self.right.evaluate()
@@ -195,12 +226,22 @@ class BinOp(Node):
       raise SemanticError(f"Unrecognized Operator: {self.operator}")
   
   def __str__(self):
-    return f"BinOp(left:{str(self.left)} {self.operator} right:{str(self.right)})"
+    pc = self.parentCount()
+    lines = [
+      tabs(pc)+f"BinOp({self.operator})",
+      tabs(pc+1)+"left:",
+      str(self.left),
+      tabs(pc+1)+"right:",
+      str(self.right),
+    ]
+    return "\n".join(lines)
     
 class UnaryOp(Node):
   def __init__(self, operator, operand):
-    self.operator = operator
+    super().__init__(); 
+    self.operator = operator; 
     self.operand = operand
+    self.operand.parent = self
   def evaluate(self):
       value = self.operand.evaluate()
 
@@ -217,12 +258,18 @@ class UnaryOp(Node):
       else:
         raise SemanticError(f"Unrecognized Operator: {self.operator}")
   def __str__(self):
-    return f"UnaryOp({self.operator}, operand={self.operand})"
+    pc = self.parentCount()
+    lines = [
+      tabs(pc)+f"UnaryOp({self.operator})",
+      tabs(pc+1)+"operand:",
+      str(self.operand)
+    ]
+    return "\n".join(lines)
 
 class Index(Node):
   def __init__(self, sequence, index):
-    self.sequence = sequence
-    self.index = index
+    super().__init__(); self.sequence = sequence; self.index = index
+    self.sequence.parent = self; self.index.parent = self
   def evaluate(self):
     index_value = self.index.evaluate()
     sequence_value = self.sequence.evaluate()
@@ -241,12 +288,19 @@ class Index(Node):
     else:
       raise SemanticError("Type mismatch index value must be a INT")
   def __str__(self):
-    return f"Index({self.sequence}[{self.index}])"
+    pc = self.parentCount()
+    return "\n".join([
+      tabs(pc)+"Index",
+      tabs(pc+1)+"sequence:",
+      str(self.sequence),
+      tabs(pc+1)+"index:",
+      str(self.index)
+    ])
   
 class TupleIndex(Node):
   def __init__(self, tuple_sequence, index):
-    self.tuple_sequence = tuple_sequence
-    self.index = index
+    super().__init__(); self.tuple_sequence = tuple_sequence; self.index = index
+    self.tuple_sequence.parent = self; self.index.parent = self
   def evaluate(self):
     index_value = self.index.evaluate()
     tuple_value = self.tuple_sequence.evaluate()
@@ -261,5 +315,12 @@ class TupleIndex(Node):
     else:
       raise SemanticError("Type mismatch index value must be a INT")
   def __str__(self):
-    return f"TupleIndex({self.tuple_sequence}[{self.index}])"
+    pc = self.parentCount()
+    return "\n".join([
+      tabs(pc)+"TupleIndex",
+      tabs(pc+1)+"tuple:",
+      str(self.tuple_sequence),
+      tabs(pc+1)+"index:",
+      str(self.index)
+    ])
   
