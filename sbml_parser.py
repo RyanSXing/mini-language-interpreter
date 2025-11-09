@@ -75,7 +75,8 @@ def t_newline(t):
 
 def t_error(t):
   #print("Illegal character '%s'" % t.value[0])
-  t.lexer.skip(1)
+  raise SyntaxError("SYNTAX ERROR")
+  #t.lexer.skip(1)
 
 import ply.lex as lex 
 lexer = lex.lex()
@@ -174,9 +175,18 @@ def p_expr_index(t):
   'expr : expr LBRACK expr RBRACK'
   t[0] = ast.Index(t[1], t[3])
 
-def p_expr_tuple_index(t):
-  'expr : HASH INT LPAREN expr RPAREN'
-  t[0] = ast.TupleIndex(t[4], ast.Int(t[2]))
+# def p_expr_tuple_index(t):
+#   'expr : HASH INT LPAREN expr RPAREN'
+#   t[0] = ast.TupleIndex(t[4], ast.Int(t[2]))
+
+def p_expr_tuple_index_expr(t):
+    'expr : HASH INT LPAREN expr RPAREN'
+    t[0] = ast.TupleIndex(t[4], ast.Int(t[2]))
+
+def p_expr_tuple_index_tuple_literal(t):
+    'expr : HASH INT LPAREN expr COMMA tuple_list RPAREN'
+    t[0] = ast.TupleIndex(ast.Tuple([t[4]] + t[6]), ast.Int(t[2]))
+
 
 def p_expr_unary_not(t):
   'expr : NOT expr'

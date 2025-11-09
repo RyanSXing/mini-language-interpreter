@@ -35,46 +35,47 @@ Rule 29    expr -> expr CONS expr
 Rule 30    expr -> expr IN expr
 Rule 31    expr -> expr LBRACK expr RBRACK
 Rule 32    expr -> HASH INT LPAREN expr RPAREN
-Rule 33    expr -> NOT expr
-Rule 34    expr -> MINUS expr
+Rule 33    expr -> HASH INT LPAREN expr COMMA tuple_list RPAREN
+Rule 34    expr -> NOT expr
+Rule 35    expr -> MINUS expr
 
 Terminals, with rules where they appear
 
 ANDALSO              : 21
 BOOL                 : 4
-COMMA                : 6 7 8 12
+COMMA                : 6 7 8 12 33
 CONS                 : 29
 DIV                  : 18
 EQUALSTO             : 23
 EXP                  : 17
 GREATERTHAN          : 27
 GREATERTHANEQUAL     : 28
-HASH                 : 32
+HASH                 : 32 33
 IN                   : 30
-INT                  : 1 32
+INT                  : 1 32 33
 INTDIV               : 19
 LBRACK               : 10 11 31
 LESSTHAN             : 25
 LESSTHANEQUAL        : 26
-LPAREN               : 5 6 7 32
-MINUS                : 15 34
+LPAREN               : 5 6 7 32 33
+MINUS                : 15 35
 MOD                  : 20
-NOT                  : 33
+NOT                  : 34
 NOTEQUAL             : 24
 ORELSE               : 22
 PLUS                 : 14
 RBRACK               : 10 11 31
 REAL                 : 2
-RPAREN               : 5 6 7 32
+RPAREN               : 5 6 7 32 33
 STRING               : 3
 TIMES                : 16
 error                : 
 
 Nonterminals, with rules where they appear
 
-expr                 : 5 6 7 8 9 12 13 14 14 15 15 16 16 17 17 18 18 19 19 20 20 21 21 22 22 23 23 24 24 25 25 26 26 27 27 28 28 29 29 30 30 31 31 32 33 34 0
+expr                 : 5 6 7 8 9 12 13 14 14 15 15 16 16 17 17 18 18 19 19 20 20 21 21 22 22 23 23 24 24 25 25 26 26 27 27 28 28 29 29 30 30 31 31 32 33 34 35 0
 list_elements        : 11 12
-tuple_list           : 7 8
+tuple_list           : 7 8 33
 
 Parsing method: LALR
 
@@ -109,8 +110,9 @@ state 0
     (30) expr -> . expr IN expr
     (31) expr -> . expr LBRACK expr RBRACK
     (32) expr -> . HASH INT LPAREN expr RPAREN
-    (33) expr -> . NOT expr
-    (34) expr -> . MINUS expr
+    (33) expr -> . HASH INT LPAREN expr COMMA tuple_list RPAREN
+    (34) expr -> . NOT expr
+    (35) expr -> . MINUS expr
 
     INT             shift and go to state 2
     REAL            shift and go to state 3
@@ -311,8 +313,9 @@ state 6
     (30) expr -> . expr IN expr
     (31) expr -> . expr LBRACK expr RBRACK
     (32) expr -> . HASH INT LPAREN expr RPAREN
-    (33) expr -> . NOT expr
-    (34) expr -> . MINUS expr
+    (33) expr -> . HASH INT LPAREN expr COMMA tuple_list RPAREN
+    (34) expr -> . NOT expr
+    (35) expr -> . MINUS expr
 
     INT             shift and go to state 2
     REAL            shift and go to state 3
@@ -360,8 +363,9 @@ state 7
     (30) expr -> . expr IN expr
     (31) expr -> . expr LBRACK expr RBRACK
     (32) expr -> . HASH INT LPAREN expr RPAREN
-    (33) expr -> . NOT expr
-    (34) expr -> . MINUS expr
+    (33) expr -> . HASH INT LPAREN expr COMMA tuple_list RPAREN
+    (34) expr -> . NOT expr
+    (35) expr -> . MINUS expr
 
     RBRACK          shift and go to state 30
     INT             shift and go to state 2
@@ -379,7 +383,7 @@ state 7
 
 state 8
 
-    (34) expr -> MINUS . expr
+    (35) expr -> MINUS . expr
     (1) expr -> . INT
     (2) expr -> . REAL
     (3) expr -> . STRING
@@ -408,8 +412,9 @@ state 8
     (30) expr -> . expr IN expr
     (31) expr -> . expr LBRACK expr RBRACK
     (32) expr -> . HASH INT LPAREN expr RPAREN
-    (33) expr -> . NOT expr
-    (34) expr -> . MINUS expr
+    (33) expr -> . HASH INT LPAREN expr COMMA tuple_list RPAREN
+    (34) expr -> . NOT expr
+    (35) expr -> . MINUS expr
 
     INT             shift and go to state 2
     REAL            shift and go to state 3
@@ -426,13 +431,14 @@ state 8
 state 9
 
     (32) expr -> HASH . INT LPAREN expr RPAREN
+    (33) expr -> HASH . INT LPAREN expr COMMA tuple_list RPAREN
 
     INT             shift and go to state 34
 
 
 state 10
 
-    (33) expr -> NOT . expr
+    (34) expr -> NOT . expr
     (1) expr -> . INT
     (2) expr -> . REAL
     (3) expr -> . STRING
@@ -461,8 +467,9 @@ state 10
     (30) expr -> . expr IN expr
     (31) expr -> . expr LBRACK expr RBRACK
     (32) expr -> . HASH INT LPAREN expr RPAREN
-    (33) expr -> . NOT expr
-    (34) expr -> . MINUS expr
+    (33) expr -> . HASH INT LPAREN expr COMMA tuple_list RPAREN
+    (34) expr -> . NOT expr
+    (35) expr -> . MINUS expr
 
     INT             shift and go to state 2
     REAL            shift and go to state 3
@@ -507,8 +514,9 @@ state 11
     (30) expr -> . expr IN expr
     (31) expr -> . expr LBRACK expr RBRACK
     (32) expr -> . HASH INT LPAREN expr RPAREN
-    (33) expr -> . NOT expr
-    (34) expr -> . MINUS expr
+    (33) expr -> . HASH INT LPAREN expr COMMA tuple_list RPAREN
+    (34) expr -> . NOT expr
+    (35) expr -> . MINUS expr
 
     INT             shift and go to state 2
     REAL            shift and go to state 3
@@ -553,8 +561,9 @@ state 12
     (30) expr -> . expr IN expr
     (31) expr -> . expr LBRACK expr RBRACK
     (32) expr -> . HASH INT LPAREN expr RPAREN
-    (33) expr -> . NOT expr
-    (34) expr -> . MINUS expr
+    (33) expr -> . HASH INT LPAREN expr COMMA tuple_list RPAREN
+    (34) expr -> . NOT expr
+    (35) expr -> . MINUS expr
 
     INT             shift and go to state 2
     REAL            shift and go to state 3
@@ -599,8 +608,9 @@ state 13
     (30) expr -> . expr IN expr
     (31) expr -> . expr LBRACK expr RBRACK
     (32) expr -> . HASH INT LPAREN expr RPAREN
-    (33) expr -> . NOT expr
-    (34) expr -> . MINUS expr
+    (33) expr -> . HASH INT LPAREN expr COMMA tuple_list RPAREN
+    (34) expr -> . NOT expr
+    (35) expr -> . MINUS expr
 
     INT             shift and go to state 2
     REAL            shift and go to state 3
@@ -645,8 +655,9 @@ state 14
     (30) expr -> . expr IN expr
     (31) expr -> . expr LBRACK expr RBRACK
     (32) expr -> . HASH INT LPAREN expr RPAREN
-    (33) expr -> . NOT expr
-    (34) expr -> . MINUS expr
+    (33) expr -> . HASH INT LPAREN expr COMMA tuple_list RPAREN
+    (34) expr -> . NOT expr
+    (35) expr -> . MINUS expr
 
     INT             shift and go to state 2
     REAL            shift and go to state 3
@@ -691,8 +702,9 @@ state 15
     (30) expr -> . expr IN expr
     (31) expr -> . expr LBRACK expr RBRACK
     (32) expr -> . HASH INT LPAREN expr RPAREN
-    (33) expr -> . NOT expr
-    (34) expr -> . MINUS expr
+    (33) expr -> . HASH INT LPAREN expr COMMA tuple_list RPAREN
+    (34) expr -> . NOT expr
+    (35) expr -> . MINUS expr
 
     INT             shift and go to state 2
     REAL            shift and go to state 3
@@ -737,8 +749,9 @@ state 16
     (30) expr -> . expr IN expr
     (31) expr -> . expr LBRACK expr RBRACK
     (32) expr -> . HASH INT LPAREN expr RPAREN
-    (33) expr -> . NOT expr
-    (34) expr -> . MINUS expr
+    (33) expr -> . HASH INT LPAREN expr COMMA tuple_list RPAREN
+    (34) expr -> . NOT expr
+    (35) expr -> . MINUS expr
 
     INT             shift and go to state 2
     REAL            shift and go to state 3
@@ -783,8 +796,9 @@ state 17
     (30) expr -> . expr IN expr
     (31) expr -> . expr LBRACK expr RBRACK
     (32) expr -> . HASH INT LPAREN expr RPAREN
-    (33) expr -> . NOT expr
-    (34) expr -> . MINUS expr
+    (33) expr -> . HASH INT LPAREN expr COMMA tuple_list RPAREN
+    (34) expr -> . NOT expr
+    (35) expr -> . MINUS expr
 
     INT             shift and go to state 2
     REAL            shift and go to state 3
@@ -829,8 +843,9 @@ state 18
     (30) expr -> . expr IN expr
     (31) expr -> . expr LBRACK expr RBRACK
     (32) expr -> . HASH INT LPAREN expr RPAREN
-    (33) expr -> . NOT expr
-    (34) expr -> . MINUS expr
+    (33) expr -> . HASH INT LPAREN expr COMMA tuple_list RPAREN
+    (34) expr -> . NOT expr
+    (35) expr -> . MINUS expr
 
     INT             shift and go to state 2
     REAL            shift and go to state 3
@@ -875,8 +890,9 @@ state 19
     (30) expr -> . expr IN expr
     (31) expr -> . expr LBRACK expr RBRACK
     (32) expr -> . HASH INT LPAREN expr RPAREN
-    (33) expr -> . NOT expr
-    (34) expr -> . MINUS expr
+    (33) expr -> . HASH INT LPAREN expr COMMA tuple_list RPAREN
+    (34) expr -> . NOT expr
+    (35) expr -> . MINUS expr
 
     INT             shift and go to state 2
     REAL            shift and go to state 3
@@ -921,8 +937,9 @@ state 20
     (30) expr -> . expr IN expr
     (31) expr -> . expr LBRACK expr RBRACK
     (32) expr -> . HASH INT LPAREN expr RPAREN
-    (33) expr -> . NOT expr
-    (34) expr -> . MINUS expr
+    (33) expr -> . HASH INT LPAREN expr COMMA tuple_list RPAREN
+    (34) expr -> . NOT expr
+    (35) expr -> . MINUS expr
 
     INT             shift and go to state 2
     REAL            shift and go to state 3
@@ -967,8 +984,9 @@ state 21
     (30) expr -> . expr IN expr
     (31) expr -> . expr LBRACK expr RBRACK
     (32) expr -> . HASH INT LPAREN expr RPAREN
-    (33) expr -> . NOT expr
-    (34) expr -> . MINUS expr
+    (33) expr -> . HASH INT LPAREN expr COMMA tuple_list RPAREN
+    (34) expr -> . NOT expr
+    (35) expr -> . MINUS expr
 
     INT             shift and go to state 2
     REAL            shift and go to state 3
@@ -1013,8 +1031,9 @@ state 22
     (30) expr -> . expr IN expr
     (31) expr -> . expr LBRACK expr RBRACK
     (32) expr -> . HASH INT LPAREN expr RPAREN
-    (33) expr -> . NOT expr
-    (34) expr -> . MINUS expr
+    (33) expr -> . HASH INT LPAREN expr COMMA tuple_list RPAREN
+    (34) expr -> . NOT expr
+    (35) expr -> . MINUS expr
 
     INT             shift and go to state 2
     REAL            shift and go to state 3
@@ -1059,8 +1078,9 @@ state 23
     (30) expr -> . expr IN expr
     (31) expr -> . expr LBRACK expr RBRACK
     (32) expr -> . HASH INT LPAREN expr RPAREN
-    (33) expr -> . NOT expr
-    (34) expr -> . MINUS expr
+    (33) expr -> . HASH INT LPAREN expr COMMA tuple_list RPAREN
+    (34) expr -> . NOT expr
+    (35) expr -> . MINUS expr
 
     INT             shift and go to state 2
     REAL            shift and go to state 3
@@ -1105,8 +1125,9 @@ state 24
     (30) expr -> . expr IN expr
     (31) expr -> . expr LBRACK expr RBRACK
     (32) expr -> . HASH INT LPAREN expr RPAREN
-    (33) expr -> . NOT expr
-    (34) expr -> . MINUS expr
+    (33) expr -> . HASH INT LPAREN expr COMMA tuple_list RPAREN
+    (34) expr -> . NOT expr
+    (35) expr -> . MINUS expr
 
     INT             shift and go to state 2
     REAL            shift and go to state 3
@@ -1151,8 +1172,9 @@ state 25
     (30) expr -> . expr IN expr
     (31) expr -> . expr LBRACK expr RBRACK
     (32) expr -> . HASH INT LPAREN expr RPAREN
-    (33) expr -> . NOT expr
-    (34) expr -> . MINUS expr
+    (33) expr -> . HASH INT LPAREN expr COMMA tuple_list RPAREN
+    (34) expr -> . NOT expr
+    (35) expr -> . MINUS expr
 
     INT             shift and go to state 2
     REAL            shift and go to state 3
@@ -1197,8 +1219,9 @@ state 26
     (30) expr -> . expr IN expr
     (31) expr -> . expr LBRACK expr RBRACK
     (32) expr -> . HASH INT LPAREN expr RPAREN
-    (33) expr -> . NOT expr
-    (34) expr -> . MINUS expr
+    (33) expr -> . HASH INT LPAREN expr COMMA tuple_list RPAREN
+    (34) expr -> . NOT expr
+    (35) expr -> . MINUS expr
 
     INT             shift and go to state 2
     REAL            shift and go to state 3
@@ -1243,8 +1266,9 @@ state 27
     (30) expr -> . expr IN expr
     (31) expr -> . expr LBRACK expr RBRACK
     (32) expr -> . HASH INT LPAREN expr RPAREN
-    (33) expr -> . NOT expr
-    (34) expr -> . MINUS expr
+    (33) expr -> . HASH INT LPAREN expr COMMA tuple_list RPAREN
+    (34) expr -> . NOT expr
+    (35) expr -> . MINUS expr
 
     INT             shift and go to state 2
     REAL            shift and go to state 3
@@ -1289,8 +1313,9 @@ state 28
     (30) expr -> . expr IN expr
     (31) expr -> . expr LBRACK expr RBRACK
     (32) expr -> . HASH INT LPAREN expr RPAREN
-    (33) expr -> . NOT expr
-    (34) expr -> . MINUS expr
+    (33) expr -> . HASH INT LPAREN expr COMMA tuple_list RPAREN
+    (34) expr -> . NOT expr
+    (35) expr -> . MINUS expr
 
     INT             shift and go to state 2
     REAL            shift and go to state 3
@@ -1432,7 +1457,7 @@ state 32
 
 state 33
 
-    (34) expr -> MINUS expr .
+    (35) expr -> MINUS expr .
     (14) expr -> expr . PLUS expr
     (15) expr -> expr . MINUS expr
     (16) expr -> expr . TIMES expr
@@ -1452,12 +1477,12 @@ state 33
     (30) expr -> expr . IN expr
     (31) expr -> expr . LBRACK expr RBRACK
 
-    ANDALSO         reduce using rule 34 (expr -> MINUS expr .)
-    ORELSE          reduce using rule 34 (expr -> MINUS expr .)
-    $end            reduce using rule 34 (expr -> MINUS expr .)
-    RPAREN          reduce using rule 34 (expr -> MINUS expr .)
-    COMMA           reduce using rule 34 (expr -> MINUS expr .)
-    RBRACK          reduce using rule 34 (expr -> MINUS expr .)
+    ANDALSO         reduce using rule 35 (expr -> MINUS expr .)
+    ORELSE          reduce using rule 35 (expr -> MINUS expr .)
+    $end            reduce using rule 35 (expr -> MINUS expr .)
+    RPAREN          reduce using rule 35 (expr -> MINUS expr .)
+    COMMA           reduce using rule 35 (expr -> MINUS expr .)
+    RBRACK          reduce using rule 35 (expr -> MINUS expr .)
     PLUS            shift and go to state 11
     MINUS           shift and go to state 12
     TIMES           shift and go to state 13
@@ -1475,22 +1500,22 @@ state 33
     IN              shift and go to state 27
     LBRACK          shift and go to state 28
 
-  ! PLUS            [ reduce using rule 34 (expr -> MINUS expr .) ]
-  ! MINUS           [ reduce using rule 34 (expr -> MINUS expr .) ]
-  ! TIMES           [ reduce using rule 34 (expr -> MINUS expr .) ]
-  ! EXP             [ reduce using rule 34 (expr -> MINUS expr .) ]
-  ! DIV             [ reduce using rule 34 (expr -> MINUS expr .) ]
-  ! INTDIV          [ reduce using rule 34 (expr -> MINUS expr .) ]
-  ! MOD             [ reduce using rule 34 (expr -> MINUS expr .) ]
-  ! EQUALSTO        [ reduce using rule 34 (expr -> MINUS expr .) ]
-  ! NOTEQUAL        [ reduce using rule 34 (expr -> MINUS expr .) ]
-  ! LESSTHAN        [ reduce using rule 34 (expr -> MINUS expr .) ]
-  ! LESSTHANEQUAL   [ reduce using rule 34 (expr -> MINUS expr .) ]
-  ! GREATERTHAN     [ reduce using rule 34 (expr -> MINUS expr .) ]
-  ! GREATERTHANEQUAL [ reduce using rule 34 (expr -> MINUS expr .) ]
-  ! CONS            [ reduce using rule 34 (expr -> MINUS expr .) ]
-  ! IN              [ reduce using rule 34 (expr -> MINUS expr .) ]
-  ! LBRACK          [ reduce using rule 34 (expr -> MINUS expr .) ]
+  ! PLUS            [ reduce using rule 35 (expr -> MINUS expr .) ]
+  ! MINUS           [ reduce using rule 35 (expr -> MINUS expr .) ]
+  ! TIMES           [ reduce using rule 35 (expr -> MINUS expr .) ]
+  ! EXP             [ reduce using rule 35 (expr -> MINUS expr .) ]
+  ! DIV             [ reduce using rule 35 (expr -> MINUS expr .) ]
+  ! INTDIV          [ reduce using rule 35 (expr -> MINUS expr .) ]
+  ! MOD             [ reduce using rule 35 (expr -> MINUS expr .) ]
+  ! EQUALSTO        [ reduce using rule 35 (expr -> MINUS expr .) ]
+  ! NOTEQUAL        [ reduce using rule 35 (expr -> MINUS expr .) ]
+  ! LESSTHAN        [ reduce using rule 35 (expr -> MINUS expr .) ]
+  ! LESSTHANEQUAL   [ reduce using rule 35 (expr -> MINUS expr .) ]
+  ! GREATERTHAN     [ reduce using rule 35 (expr -> MINUS expr .) ]
+  ! GREATERTHANEQUAL [ reduce using rule 35 (expr -> MINUS expr .) ]
+  ! CONS            [ reduce using rule 35 (expr -> MINUS expr .) ]
+  ! IN              [ reduce using rule 35 (expr -> MINUS expr .) ]
+  ! LBRACK          [ reduce using rule 35 (expr -> MINUS expr .) ]
   ! ANDALSO         [ shift and go to state 18 ]
   ! ORELSE          [ shift and go to state 19 ]
 
@@ -1498,13 +1523,14 @@ state 33
 state 34
 
     (32) expr -> HASH INT . LPAREN expr RPAREN
+    (33) expr -> HASH INT . LPAREN expr COMMA tuple_list RPAREN
 
     LPAREN          shift and go to state 58
 
 
 state 35
 
-    (33) expr -> NOT expr .
+    (34) expr -> NOT expr .
     (14) expr -> expr . PLUS expr
     (15) expr -> expr . MINUS expr
     (16) expr -> expr . TIMES expr
@@ -1524,12 +1550,12 @@ state 35
     (30) expr -> expr . IN expr
     (31) expr -> expr . LBRACK expr RBRACK
 
-    ANDALSO         reduce using rule 33 (expr -> NOT expr .)
-    ORELSE          reduce using rule 33 (expr -> NOT expr .)
-    $end            reduce using rule 33 (expr -> NOT expr .)
-    RPAREN          reduce using rule 33 (expr -> NOT expr .)
-    COMMA           reduce using rule 33 (expr -> NOT expr .)
-    RBRACK          reduce using rule 33 (expr -> NOT expr .)
+    ANDALSO         reduce using rule 34 (expr -> NOT expr .)
+    ORELSE          reduce using rule 34 (expr -> NOT expr .)
+    $end            reduce using rule 34 (expr -> NOT expr .)
+    RPAREN          reduce using rule 34 (expr -> NOT expr .)
+    COMMA           reduce using rule 34 (expr -> NOT expr .)
+    RBRACK          reduce using rule 34 (expr -> NOT expr .)
     PLUS            shift and go to state 11
     MINUS           shift and go to state 12
     TIMES           shift and go to state 13
@@ -1547,22 +1573,22 @@ state 35
     IN              shift and go to state 27
     LBRACK          shift and go to state 28
 
-  ! PLUS            [ reduce using rule 33 (expr -> NOT expr .) ]
-  ! MINUS           [ reduce using rule 33 (expr -> NOT expr .) ]
-  ! TIMES           [ reduce using rule 33 (expr -> NOT expr .) ]
-  ! EXP             [ reduce using rule 33 (expr -> NOT expr .) ]
-  ! DIV             [ reduce using rule 33 (expr -> NOT expr .) ]
-  ! INTDIV          [ reduce using rule 33 (expr -> NOT expr .) ]
-  ! MOD             [ reduce using rule 33 (expr -> NOT expr .) ]
-  ! EQUALSTO        [ reduce using rule 33 (expr -> NOT expr .) ]
-  ! NOTEQUAL        [ reduce using rule 33 (expr -> NOT expr .) ]
-  ! LESSTHAN        [ reduce using rule 33 (expr -> NOT expr .) ]
-  ! LESSTHANEQUAL   [ reduce using rule 33 (expr -> NOT expr .) ]
-  ! GREATERTHAN     [ reduce using rule 33 (expr -> NOT expr .) ]
-  ! GREATERTHANEQUAL [ reduce using rule 33 (expr -> NOT expr .) ]
-  ! CONS            [ reduce using rule 33 (expr -> NOT expr .) ]
-  ! IN              [ reduce using rule 33 (expr -> NOT expr .) ]
-  ! LBRACK          [ reduce using rule 33 (expr -> NOT expr .) ]
+  ! PLUS            [ reduce using rule 34 (expr -> NOT expr .) ]
+  ! MINUS           [ reduce using rule 34 (expr -> NOT expr .) ]
+  ! TIMES           [ reduce using rule 34 (expr -> NOT expr .) ]
+  ! EXP             [ reduce using rule 34 (expr -> NOT expr .) ]
+  ! DIV             [ reduce using rule 34 (expr -> NOT expr .) ]
+  ! INTDIV          [ reduce using rule 34 (expr -> NOT expr .) ]
+  ! MOD             [ reduce using rule 34 (expr -> NOT expr .) ]
+  ! EQUALSTO        [ reduce using rule 34 (expr -> NOT expr .) ]
+  ! NOTEQUAL        [ reduce using rule 34 (expr -> NOT expr .) ]
+  ! LESSTHAN        [ reduce using rule 34 (expr -> NOT expr .) ]
+  ! LESSTHANEQUAL   [ reduce using rule 34 (expr -> NOT expr .) ]
+  ! GREATERTHAN     [ reduce using rule 34 (expr -> NOT expr .) ]
+  ! GREATERTHANEQUAL [ reduce using rule 34 (expr -> NOT expr .) ]
+  ! CONS            [ reduce using rule 34 (expr -> NOT expr .) ]
+  ! IN              [ reduce using rule 34 (expr -> NOT expr .) ]
+  ! LBRACK          [ reduce using rule 34 (expr -> NOT expr .) ]
   ! ANDALSO         [ shift and go to state 18 ]
   ! ORELSE          [ shift and go to state 19 ]
 
@@ -2777,8 +2803,9 @@ state 55
     (30) expr -> . expr IN expr
     (31) expr -> . expr LBRACK expr RBRACK
     (32) expr -> . HASH INT LPAREN expr RPAREN
-    (33) expr -> . NOT expr
-    (34) expr -> . MINUS expr
+    (33) expr -> . HASH INT LPAREN expr COMMA tuple_list RPAREN
+    (34) expr -> . NOT expr
+    (35) expr -> . MINUS expr
 
     RPAREN          shift and go to state 61
     INT             shift and go to state 2
@@ -2855,8 +2882,9 @@ state 57
     (30) expr -> . expr IN expr
     (31) expr -> . expr LBRACK expr RBRACK
     (32) expr -> . HASH INT LPAREN expr RPAREN
-    (33) expr -> . NOT expr
-    (34) expr -> . MINUS expr
+    (33) expr -> . HASH INT LPAREN expr COMMA tuple_list RPAREN
+    (34) expr -> . NOT expr
+    (35) expr -> . MINUS expr
 
     INT             shift and go to state 2
     REAL            shift and go to state 3
@@ -2874,6 +2902,7 @@ state 57
 state 58
 
     (32) expr -> HASH INT LPAREN . expr RPAREN
+    (33) expr -> HASH INT LPAREN . expr COMMA tuple_list RPAREN
     (1) expr -> . INT
     (2) expr -> . REAL
     (3) expr -> . STRING
@@ -2902,8 +2931,9 @@ state 58
     (30) expr -> . expr IN expr
     (31) expr -> . expr LBRACK expr RBRACK
     (32) expr -> . HASH INT LPAREN expr RPAREN
-    (33) expr -> . NOT expr
-    (34) expr -> . MINUS expr
+    (33) expr -> . HASH INT LPAREN expr COMMA tuple_list RPAREN
+    (34) expr -> . NOT expr
+    (35) expr -> . MINUS expr
 
     INT             shift and go to state 2
     REAL            shift and go to state 3
@@ -3035,6 +3065,7 @@ state 63
 state 64
 
     (32) expr -> HASH INT LPAREN expr . RPAREN
+    (33) expr -> HASH INT LPAREN expr . COMMA tuple_list RPAREN
     (14) expr -> expr . PLUS expr
     (15) expr -> expr . MINUS expr
     (16) expr -> expr . TIMES expr
@@ -3055,6 +3086,7 @@ state 64
     (31) expr -> expr . LBRACK expr RBRACK
 
     RPAREN          shift and go to state 67
+    COMMA           shift and go to state 68
     PLUS            shift and go to state 11
     MINUS           shift and go to state 12
     TIMES           shift and go to state 13
@@ -3108,8 +3140,9 @@ state 65
     (30) expr -> . expr IN expr
     (31) expr -> . expr LBRACK expr RBRACK
     (32) expr -> . HASH INT LPAREN expr RPAREN
-    (33) expr -> . NOT expr
-    (34) expr -> . MINUS expr
+    (33) expr -> . HASH INT LPAREN expr COMMA tuple_list RPAREN
+    (34) expr -> . NOT expr
+    (35) expr -> . MINUS expr
 
     INT             shift and go to state 2
     REAL            shift and go to state 3
@@ -3122,7 +3155,7 @@ state 65
     MINUS           shift and go to state 8
 
     expr                           shift and go to state 60
-    tuple_list                     shift and go to state 68
+    tuple_list                     shift and go to state 69
 
 state 66
 
@@ -3182,7 +3215,92 @@ state 67
 
 state 68
 
+    (33) expr -> HASH INT LPAREN expr COMMA . tuple_list RPAREN
+    (8) tuple_list -> . expr COMMA tuple_list
+    (9) tuple_list -> . expr
+    (1) expr -> . INT
+    (2) expr -> . REAL
+    (3) expr -> . STRING
+    (4) expr -> . BOOL
+    (5) expr -> . LPAREN expr RPAREN
+    (6) expr -> . LPAREN expr COMMA RPAREN
+    (7) expr -> . LPAREN expr COMMA tuple_list RPAREN
+    (10) expr -> . LBRACK RBRACK
+    (11) expr -> . LBRACK list_elements RBRACK
+    (14) expr -> . expr PLUS expr
+    (15) expr -> . expr MINUS expr
+    (16) expr -> . expr TIMES expr
+    (17) expr -> . expr EXP expr
+    (18) expr -> . expr DIV expr
+    (19) expr -> . expr INTDIV expr
+    (20) expr -> . expr MOD expr
+    (21) expr -> . expr ANDALSO expr
+    (22) expr -> . expr ORELSE expr
+    (23) expr -> . expr EQUALSTO expr
+    (24) expr -> . expr NOTEQUAL expr
+    (25) expr -> . expr LESSTHAN expr
+    (26) expr -> . expr LESSTHANEQUAL expr
+    (27) expr -> . expr GREATERTHAN expr
+    (28) expr -> . expr GREATERTHANEQUAL expr
+    (29) expr -> . expr CONS expr
+    (30) expr -> . expr IN expr
+    (31) expr -> . expr LBRACK expr RBRACK
+    (32) expr -> . HASH INT LPAREN expr RPAREN
+    (33) expr -> . HASH INT LPAREN expr COMMA tuple_list RPAREN
+    (34) expr -> . NOT expr
+    (35) expr -> . MINUS expr
+
+    INT             shift and go to state 2
+    REAL            shift and go to state 3
+    STRING          shift and go to state 4
+    BOOL            shift and go to state 5
+    LPAREN          shift and go to state 6
+    LBRACK          shift and go to state 7
+    HASH            shift and go to state 9
+    NOT             shift and go to state 10
+    MINUS           shift and go to state 8
+
+    expr                           shift and go to state 60
+    tuple_list                     shift and go to state 70
+
+state 69
+
     (8) tuple_list -> expr COMMA tuple_list .
 
     RPAREN          reduce using rule 8 (tuple_list -> expr COMMA tuple_list .)
+
+
+state 70
+
+    (33) expr -> HASH INT LPAREN expr COMMA tuple_list . RPAREN
+
+    RPAREN          shift and go to state 71
+
+
+state 71
+
+    (33) expr -> HASH INT LPAREN expr COMMA tuple_list RPAREN .
+
+    PLUS            reduce using rule 33 (expr -> HASH INT LPAREN expr COMMA tuple_list RPAREN .)
+    MINUS           reduce using rule 33 (expr -> HASH INT LPAREN expr COMMA tuple_list RPAREN .)
+    TIMES           reduce using rule 33 (expr -> HASH INT LPAREN expr COMMA tuple_list RPAREN .)
+    EXP             reduce using rule 33 (expr -> HASH INT LPAREN expr COMMA tuple_list RPAREN .)
+    DIV             reduce using rule 33 (expr -> HASH INT LPAREN expr COMMA tuple_list RPAREN .)
+    INTDIV          reduce using rule 33 (expr -> HASH INT LPAREN expr COMMA tuple_list RPAREN .)
+    MOD             reduce using rule 33 (expr -> HASH INT LPAREN expr COMMA tuple_list RPAREN .)
+    ANDALSO         reduce using rule 33 (expr -> HASH INT LPAREN expr COMMA tuple_list RPAREN .)
+    ORELSE          reduce using rule 33 (expr -> HASH INT LPAREN expr COMMA tuple_list RPAREN .)
+    EQUALSTO        reduce using rule 33 (expr -> HASH INT LPAREN expr COMMA tuple_list RPAREN .)
+    NOTEQUAL        reduce using rule 33 (expr -> HASH INT LPAREN expr COMMA tuple_list RPAREN .)
+    LESSTHAN        reduce using rule 33 (expr -> HASH INT LPAREN expr COMMA tuple_list RPAREN .)
+    LESSTHANEQUAL   reduce using rule 33 (expr -> HASH INT LPAREN expr COMMA tuple_list RPAREN .)
+    GREATERTHAN     reduce using rule 33 (expr -> HASH INT LPAREN expr COMMA tuple_list RPAREN .)
+    GREATERTHANEQUAL reduce using rule 33 (expr -> HASH INT LPAREN expr COMMA tuple_list RPAREN .)
+    CONS            reduce using rule 33 (expr -> HASH INT LPAREN expr COMMA tuple_list RPAREN .)
+    IN              reduce using rule 33 (expr -> HASH INT LPAREN expr COMMA tuple_list RPAREN .)
+    LBRACK          reduce using rule 33 (expr -> HASH INT LPAREN expr COMMA tuple_list RPAREN .)
+    $end            reduce using rule 33 (expr -> HASH INT LPAREN expr COMMA tuple_list RPAREN .)
+    RPAREN          reduce using rule 33 (expr -> HASH INT LPAREN expr COMMA tuple_list RPAREN .)
+    COMMA           reduce using rule 33 (expr -> HASH INT LPAREN expr COMMA tuple_list RPAREN .)
+    RBRACK          reduce using rule 33 (expr -> HASH INT LPAREN expr COMMA tuple_list RPAREN .)
 
