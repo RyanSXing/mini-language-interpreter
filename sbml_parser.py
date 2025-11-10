@@ -2,11 +2,13 @@
 
 tokens = (
   'INT','REAL','STRING','BOOL',
-  'LPAREN','RPAREN','LBRACK', 'RBRACK', 'COMMA', 'HASH',
+  'LPAREN','RPAREN','LBRACK', 'RBRACK', 'LBRACE', 'RBRACE', 
+  'COMMA', 'HASH', 'SEMI', 'ASSIGN'
   'EXP', 'TIMES', 'DIV','INTDIV', 'MOD', 'PLUS', 'MINUS',
   'IN', 'CONS',
   'NOT', 'ANDALSO', 'ORELSE',
-  'LESSTHAN', 'LESSTHANEQUAL', 'EQUALSTO', 'NOTEQUAL', 'GREATERTHANEQUAL', 'GREATERTHAN'
+  'LESSTHAN', 'LESSTHANEQUAL', 'EQUALSTO', 'NOTEQUAL', 'GREATERTHANEQUAL', 'GREATERTHAN',
+  'PRINT', 'IF', 'ELSE', 'WHILE'
 )
 
 t_LESSTHANEQUAL     = r'<='
@@ -20,22 +22,44 @@ t_LPAREN  = r'\('
 t_RPAREN  = r'\)'
 t_LBRACK  = r'\['
 t_RBRACK  = r'\]'
+t_LBRACE  = r'\{'
+t_RBRACE  = r'\}'
 t_COMMA   = r','
 t_HASH    = r'\#'
+t_SEMI     = r';'
+t_ASSIGN   = r'='
 
 t_EXP     = r'\*\*'
 t_TIMES   = r'\*'
 t_DIV     = r'/'
-t_INTDIV  = r'div'
-t_MOD     = r'mod'
+# t_INTDIV  = r'div'
+# t_MOD     = r'mod'
 t_PLUS    = r'\+'
 t_MINUS   = r'-'
 
 t_IN      = r'in'
 t_CONS    = r'::'
-t_NOT     = r'not'
-t_ANDALSO = r'andalso'
-t_ORELSE  = r'orelse'
+# t_NOT     = r'not'
+# t_ANDALSO = r'andalso'
+# t_ORELSE  = r'orelse'
+
+reserved = {
+    'in': 'IN',
+    'not': 'NOT',
+    'andalso': 'ANDALSO',
+    'orelse': 'ORELSE',
+    'div': 'INTDIV',
+    'mod': 'MOD',
+    'print': 'PRINT',
+    'if': 'IF',
+    'else': 'ELSE',
+    'while': 'WHILE',
+}
+
+def t_NAME(t):
+    r'[a-zA-Z][a-zA-Z0-9_]*'
+    t.type = reserved.get(t.value, 'NAME')
+    return t
 
 def t_STRING(t):
     r'(?:"[^"\n]*"|\'[^\'\n]*\')'
@@ -97,7 +121,71 @@ precedence = (
 
 import sbml_ast as ast
 
-start = 'expr'
+start = 'program'
+
+def p_program(t):
+  'program : block'
+  t[0] = t[1]
+
+def p_block(t):
+  'block : LBRACE stmt_list RBRACE'
+  t[0] = ast.Block(t[2])
+
+def p_stmt_list_multi(t):
+  'stmt_list : stmt_list statement'
+  t[0] = [1] + [t[2]]
+
+def p_stmt_list_single(t):
+  'stmt_list : statement'
+  t[0] = [t[1]]
+
+def p_stmt_list_empty(t):
+  'stmt_list : '
+  t[0] = []
+
+def p_statement_assign(t):
+  'statement : lvalue ASSIGN expr SEMI'
+  t[0] = ast.Assign(t[1], t[3])
+
+def p_statement_print(t):
+  'statement : PRINT LPAREN expr RPAREN SEMI'
+  t[0] = ast.Print(t[3])
+
+def p_statement_if(t):
+  'statement : IF LPAREN expr RPAREN block'
+  t[0] = ast.If(t[3], t[5])
+
+def p_statement_if_else(t):
+  'statement : IF LPAREN expr RPAREN block ELSE block'
+  t[0] = ast.If(t[3], t[5], t[7])
+  
+def p_statement_while(t):
+  'statement : WHILE LPAREN expr RPAREN block'
+  t[0] = ast.While(t[3], t[5])
+
+def p_statement_block(t):
+    'statement : block'
+    t[0] = t[1]
+
+def p_lvalue_name(t):
+    'lvalue : NAME'
+    t[0] = ast.Var(t[1])
+
+def p_lvalue_index(t):
+    'lvalue : expr LBRACK expr RBRACK'
+    t[0] = ast.Index(t[1], t[3])
+
+def p_expr_name(p):
+    'expr : NAME'
+    p[0] = ast.Var(p[1])
+
+def p_expr_tuple_index_expr(p):
+    'expr : HASH INT LPAREN expr RPAREN'
+    p[0] = ast.TupleIndex(p[4], ast.Int(p[2]))
+
+def p_expr_tuple_index_tuple_literal(p):
+    'expr : HASH INT LPAREN expr COMMA tuple_list RPAREN'
+    p[0] = ast.TupleIndex(ast.Tuple([p[4]] + p[6]), ast.Int(p[2]))
 
 def p_expr_int(t):
   'expr : INT'

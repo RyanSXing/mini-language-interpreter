@@ -9,6 +9,8 @@ class SemanticError(Exception):
 
   def __repr__(self):
     return "SEMANTIC ERROR"
+  
+ENV = {}
 
 #type check helper methods 
 def _is_int(x): return isinstance(x, int) and not isinstance(x, bool)
@@ -36,6 +38,23 @@ class Node:
   def evaluate(self): raise NotImplementedError()
   def __str__(self):
     return tabs(self.parentCount())+self.__class__.__name__
+  
+class Block(Node):
+  def __init__(self, statements):
+    super().__init__()
+    self.statements = statements
+    for s in self.statements:
+      s.parent = self
+  def evaluate(self):
+    for s in self.statements:
+      s.evaluate()
+  def __str__(self):
+    pc = self.parentCount()
+    lines = [tabs(pc) + "Block{"]
+    for s in self.statements:
+        lines.append(str(s))
+    lines.append(tabs(pc) + "}")
+    return "\n".join(lines)
   
 class Int(Node):
   def __init__(self, v): 
@@ -90,6 +109,16 @@ class Tuple(Node):
     for e in self.value: lines.append(str(e))
     lines.append(tabs(pc)+")")
     return "\n".join(lines)
+  
+class Var(Node):
+  def __init__(self, name):
+    super().__init__()
+  def evaluate(self):
+    if self.name in ENV:
+      return ENV[self.name]
+    raise SemanticError("SEMANTIC ERROR")
+  def __str__(self):
+    return tabs(self.parentCount()) + f"Var({self.name})"
   
 #handles all binary operators
 class BinOp(Node):
@@ -332,5 +361,120 @@ class TupleIndex(Node):
       str(self.tuple_sequence),
       tabs(pc+1)+"index:",
       str(self.index)
+    ])
+  
+class Assign(Node):
+  def __init__(self, left, right):
+    super().__init__()
+    self.left = left
+    self.right = right
+  def evaluate(self):
+    value = self.right.evaluate
+    if isinstance(self.left, Var):
+      ENV[self.left.name] = value
+      return 
+    if isinstance(self.left, Index):
+      ind = self.left.index.evlaute()
+      container = self.left.sequence.evaluate
+
+      if not _is_int(ind):
+        raise SemanticError("SEMANTIC ERROR")
+      
+      if not _is_List(container):
+        raise SemanticError("SEMANTIC ERROR")
+      
+      if ind < 0 or ind >= len(container):
+        raise SemanticError("SEMANTIC ERROR")
+      
+      container[ind] = value
+      return 
+    raise SemanticError("SEMANTIC ERROR")
+  
+  def __str__(self):
+    pc = self.parentCount()
+    return "\n".join([
+      tabs(pc) + "Assign",
+      tabs(pc+1) + "left:",
+      str(self.left),
+      tabs(pc+1) + "right:",
+      str(self.right),
+    ])
+
+class Print(Node):
+  def __init__(self, expr):
+    super().__init__()
+    self.expr = expr
+    self.expr.parent = self
+
+  def evaluate(self):
+    val = self.expr.evaluate
+    print(val)
+  
+  def __str__(self):
+    pc = self.parentCount()
+    return "\n".join([
+        tabs(pc) + "Print",
+        str(self.expr)
+    ])
+
+class If(Node):
+  def __init__(self, condition, then_block, else_block=None):
+    super().__init__()
+    self.conidtion = condition
+    self.then_block = then_block
+    self.else_block = else_block
+    self.conidtion.parent = self
+    self.then_block.parent = self
+    if self.else_block:
+      self.else_block.parent = self
+    
+  def evaluate(self):
+    cond = self.condition.evaluate()
+    if not _is_bool(c):
+      raise SemanticError("SEMANTIC ERROR")
+    if cond:
+      self.then_block.evaluate()
+    elif self.else_block:
+      self.else_block.evaluate()
+
+  def __str__(self):
+    pc = self.parentCount()
+    lines = [
+        tabs(pc) + "If",
+        tabs(pc+1) + "cond:",
+        str(self.cond),
+        tabs(pc+1) + "then:",
+        str(self.then_block)
+    ]
+    if self.else_block:
+        lines.append(tabs(pc+1) + "else:")
+        lines.append(str(self.else_block))
+    return "\n".join(lines)
+
+class While(Node):
+  def __init__(self, condition, block):
+    super().__init__()
+    self.condition = condition
+    self.block = block
+    self.condition.parent = self
+    self.block.parent = self
+
+  def evaluate(self):
+    while True:
+      cond = self.condition.evaluate()
+      if not _is_bool(cond):
+        raise SemanticError("SEMANTIC ERROR")
+      if not cond:
+        break
+      self.body.evaluate()
+  
+  def __str__(self):
+    pc = self.parentCount()
+    return "\n".join([
+        tabs(pc) + "While",
+        tabs(pc+1) + "cond:",
+        str(self.cond),
+        tabs(pc+1) + "body:",
+        str(self.body)
     ])
   
