@@ -113,6 +113,7 @@ class Tuple(Node):
 class Var(Node):
   def __init__(self, name):
     super().__init__()
+    self.name = name
   def evaluate(self):
     if self.name in ENV:
       return ENV[self.name]
@@ -369,13 +370,13 @@ class Assign(Node):
     self.left = left
     self.right = right
   def evaluate(self):
-    value = self.right.evaluate
+    value = self.right.evaluate()
     if isinstance(self.left, Var):
       ENV[self.left.name] = value
       return 
     if isinstance(self.left, Index):
-      ind = self.left.index.evlaute()
-      container = self.left.sequence.evaluate
+      ind = self.left.index.evaluate()
+      container = self.left.sequence.evaluate()
 
       if not _is_int(ind):
         raise SemanticError("SEMANTIC ERROR")
@@ -407,7 +408,7 @@ class Print(Node):
     self.expr.parent = self
 
   def evaluate(self):
-    val = self.expr.evaluate
+    val = self.expr.evaluate()
     print(val)
   
   def __str__(self):
@@ -420,17 +421,17 @@ class Print(Node):
 class If(Node):
   def __init__(self, condition, then_block, else_block=None):
     super().__init__()
-    self.conidtion = condition
+    self.condition = condition
     self.then_block = then_block
     self.else_block = else_block
-    self.conidtion.parent = self
+    self.condition.parent = self
     self.then_block.parent = self
     if self.else_block:
       self.else_block.parent = self
     
   def evaluate(self):
     cond = self.condition.evaluate()
-    if not _is_bool(c):
+    if not _is_bool(cond):
       raise SemanticError("SEMANTIC ERROR")
     if cond:
       self.then_block.evaluate()
@@ -442,7 +443,7 @@ class If(Node):
     lines = [
         tabs(pc) + "If",
         tabs(pc+1) + "cond:",
-        str(self.cond),
+        str(self.condition),
         tabs(pc+1) + "then:",
         str(self.then_block)
     ]
@@ -466,15 +467,15 @@ class While(Node):
         raise SemanticError("SEMANTIC ERROR")
       if not cond:
         break
-      self.body.evaluate()
+      self.block.evaluate()
   
   def __str__(self):
     pc = self.parentCount()
     return "\n".join([
         tabs(pc) + "While",
         tabs(pc+1) + "cond:",
-        str(self.cond),
+        str(self.condition),
         tabs(pc+1) + "body:",
-        str(self.body)
+        str(self.block)
     ])
   

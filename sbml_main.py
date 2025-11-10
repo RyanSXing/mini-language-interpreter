@@ -2,7 +2,7 @@
 
 import sys
 import sbml_parser as p
-from sbml_ast import SemanticError
+from sbml_ast import SemanticError, ENV
 
 def main():
     if len(sys.argv) != 3:
@@ -18,37 +18,53 @@ def main():
 
     try:
         with open(input_file, 'r') as file:
-            lines = file.readlines()
+            source = file.read()
     except FileNotFoundError:
-        print(f"Error: File '{input_file}' not found.")
+        print("Improper command line argument")
         return
 
-    for line in lines:
-        s = line.strip()
-        if not s:
-            continue 
+    # 3. Parse once
+    try:
+        # parser is built inside sbml_parser
+        # start symbol should be 'program'
+        root = p.parser.parse(source, lexer = p.lexer)
+        if root is None:
+            raise SyntaxError
+    except:
+        print("SYNTAX ERROR")
+        return
 
+    # 4. Reset environment before execution/analysis
+    try:
+        ENV.clear()
+    except NameError:
+        # if ENV not imported / not used, ignore
+        pass
+
+    # 5. Mode: -P (pretty-print AST or SEMANTIC ERROR)
+    if mode == '-P':
         try:
-            node = p.parse_line(s)
-        except Exception:
-          print("SYNTAX ERROR")
-          continue
-        if mode == '-P':
-            try:
-                node.evaluate()
-                print(node)
-            except SemanticError:
-                print("SEMANTIC ERROR")
-            except Exception as e:
-                print(f"SEMANTIC ERROR")
-        elif mode == '-E':
-            try:
-                val = node.evaluate()
-                print(repr(val) if isinstance(val, str) else val)
-            except SemanticError:
-                print("SEMANTIC ERROR")
-            except Exception as e:
-                print(f"SEMANTIC ERROR")
+            # Evaluate to detect semantic issues (per your previous behavior)
+            root.evaluate()
+            print(root)
+        except SemanticError:
+            print("SEMANTIC ERROR")
+        except:
+            # Any unexpected runtime -> semantic error by spec convention
+            print("SEMANTIC ERROR")
+        return
+
+    # 6. Mode: -E (execute program)
+    if mode == '-E':
+        try:
+            # Block.evaluate() runs statements; Print nodes handle their own output.
+            ENV.clear()
+            root.evaluate()
+        except SemanticError:
+            print("SEMANTIC ERROR")
+        except:
+            print("SEMANTIC ERROR")
+        return
 
 if __name__ == "__main__":
     main()

@@ -1,9 +1,9 @@
 #Ryan Xing 116607537
 
 tokens = (
-  'INT','REAL','STRING','BOOL',
+  'INT','REAL','STRING','BOOL', 'NAME',
   'LPAREN','RPAREN','LBRACK', 'RBRACK', 'LBRACE', 'RBRACE', 
-  'COMMA', 'HASH', 'SEMI', 'ASSIGN'
+  'COMMA', 'HASH', 'SEMI', 'ASSIGN',
   'EXP', 'TIMES', 'DIV','INTDIV', 'MOD', 'PLUS', 'MINUS',
   'IN', 'CONS',
   'NOT', 'ANDALSO', 'ORELSE',
@@ -133,7 +133,7 @@ def p_block(t):
 
 def p_stmt_list_multi(t):
   'stmt_list : stmt_list statement'
-  t[0] = [1] + [t[2]]
+  t[0] = t[1] + [t[2]]
 
 def p_stmt_list_single(t):
   'stmt_list : statement'
@@ -267,13 +267,13 @@ def p_expr_index(t):
 #   'expr : HASH INT LPAREN expr RPAREN'
 #   t[0] = ast.TupleIndex(t[4], ast.Int(t[2]))
 
-def p_expr_tuple_index_expr(t):
-    'expr : HASH INT LPAREN expr RPAREN'
-    t[0] = ast.TupleIndex(t[4], ast.Int(t[2]))
+# def p_expr_tuple_index_expr(t):
+#     'expr : HASH INT LPAREN expr RPAREN'
+#     t[0] = ast.TupleIndex(t[4], ast.Int(t[2]))
 
-def p_expr_tuple_index_tuple_literal(t):
-    'expr : HASH INT LPAREN expr COMMA tuple_list RPAREN'
-    t[0] = ast.TupleIndex(ast.Tuple([t[4]] + t[6]), ast.Int(t[2]))
+# def p_expr_tuple_index_tuple_literal(t):
+#     'expr : HASH INT LPAREN expr COMMA tuple_list RPAREN'
+#     t[0] = ast.TupleIndex(ast.Tuple([t[4]] + t[6]), ast.Int(t[2]))
 
 
 def p_expr_unary_not(t):
