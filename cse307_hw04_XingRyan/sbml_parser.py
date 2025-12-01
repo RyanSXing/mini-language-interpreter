@@ -8,7 +8,7 @@ tokens = (
   'IN', 'CONS',
   'NOT', 'ANDALSO', 'ORELSE',
   'LESSTHAN', 'LESSTHANEQUAL', 'EQUALSTO', 'NOTEQUAL', 'GREATERTHANEQUAL', 'GREATERTHAN',
-  'PRINT', 'IF', 'ELSE', 'WHILE', 'FUN'
+  'PRINT', 'IF', 'ELSE', 'WHILE'
 )
 
 t_LESSTHANEQUAL     = r'<='
@@ -54,13 +54,7 @@ reserved = {
     'if': 'IF',
     'else': 'ELSE',
     'while': 'WHILE',
-    'fun': 'FUN',
 }
-
-def t_BOOL(t):
-  r'True|False'
-  t.value = (t.value == 'True')
-  return t
 
 def t_NAME(t):
     r'[a-zA-Z][a-zA-Z0-9_]*'
@@ -72,6 +66,10 @@ def t_STRING(t):
     t.value = t.value[1:-1]  
     return t
 
+def t_BOOL(t):
+  r'True|False'
+  t.value = (t.value == 'True')
+  return t
 
 def t_REAL(t):
   r'((\d+\.\d*)|(\.\d+)|(\d+\.\d+))([eE][+-]?\d+)?'
@@ -125,51 +123,13 @@ import sbml_ast as ast
 
 start = 'program'
 
-# def p_program(t):
-#   'program : block'
-#   t[0] = t[1]
-
-def p_program_with_funcs(t):
-  'program : funcdef_list block'
-  t[0] = ast.Program(t[1], t[2])
-
-def p_program_block_only(t):
+def p_program(t):
   'program : block'
   t[0] = t[1]
 
 def p_block(t):
   'block : LBRACE stmt_list RBRACE'
   t[0] = ast.Block(t[2])
-
-def p_funcdef_list_multi(t):
-  'funcdef_list : funcdef_list funcdef'
-  t[0] = t[1] + [t[2]]
-
-def p_funcdef_single(t):
-  'funcdef_list : funcdef'
-  t[0] = [t[1]]
-
-def p_param_list_single(t):
-  'param_list : NAME'
-  t[0] = [t[1]]
-
-def p_param_list_multi(t):
-  'param_list : param_list COMMA NAME'
-  t[0] = t[1] + [t[3]]
-
-def p_param_list_opt_empty(t):
-  'param_list_opt : '
-  t[0] = []
-
-def p_param_list_opt(t):
-  'param_list_opt : param_list'
-  t[0] = t[1]
-
-def p_funcdef(t):
-  'funcdef : FUN NAME LPAREN param_list_opt RPAREN ASSIGN block expr SEMI'
-  t[0] = ast.FunctionDef(t[2], t[4], t[7], t[8])
-
-
 
 def p_stmt_list_multi(t):
   'stmt_list : stmt_list statement'
@@ -215,33 +175,9 @@ def p_lvalue_index(t):
     'lvalue : expr LBRACK expr RBRACK'
     t[0] = ast.Index(t[1], t[3])
 
-# def p_expr_name(p):
-#     'expr : NAME'
-#     p[0] = ast.Var(p[1])
-
-def p_expr_fun_call(t):
-    'expr : NAME LPAREN arg_list_opt RPAREN'
-    t[0] = ast.FunctionCall(t[1], t[3])
-
-def p_arg_list_single(t):
-    'arg_list : expr'
-    t[0] = [t[1]]
-
-def p_arg_list_multi(t):
-    'arg_list : arg_list COMMA expr'
-    t[0] = t[1] + [t[3]]
-
-def p_arg_list_opt_empty(t):
-    'arg_list_opt : '
-    t[0] = []
-
-def p_arg_list_opt(t):
-    'arg_list_opt : arg_list'
-    t[0] = t[1]
-
-def p_expr_name(t):
+def p_expr_name(p):
     'expr : NAME'
-    t[0] = ast.Var(t[1])
+    p[0] = ast.Var(p[1])
 
 def p_expr_tuple_index_expr(p):
     'expr : HASH INT LPAREN expr RPAREN'

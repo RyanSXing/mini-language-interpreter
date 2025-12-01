@@ -1,0 +1,42 @@
+{
+  s = "raceboat";
+  len_s = 8;
+  
+  s_nospace = "";
+  len_nospace = len_s;
+  i = 0;
+  while(i < len_s)
+  {
+    if(s[i] <> " ")
+    {
+      s_nospace = s_nospace + s[i];
+    }
+    else
+    {
+      len_nospace = len_nospace - 1;
+    }
+    i = i + 1;
+  }
+  
+  j = 0;
+  s_reverse = "";
+  while(j < len_nospace)
+  {
+    s_reverse = s_nospace[j] + s_reverse;
+    j = j + 1;
+  }
+  
+  k = 0;
+  is_palindrome = True;
+  while(k < len_nospace andalso is_palindrome)
+  {
+    if(s_nospace[k] <> s_reverse[k])
+    {
+      is_palindrome = False;
+    }
+    k = k + 1;
+  }
+  print(s);
+  print("IS_PALINDROME:");
+  print(is_palindrome);
+}

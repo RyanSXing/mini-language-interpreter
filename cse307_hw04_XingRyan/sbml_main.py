@@ -36,28 +36,17 @@ def main():
     except NameError:
         pass
 
-    if mode == '-P':            
+    if mode == '-P':
         try:
-
-            ENV.clear()
+            root.evaluate()
             print(root)
         except SemanticError:
             print("SEMANTIC ERROR")
         except:
             print("SEMANTIC ERROR")
         return
-    
-        # try:
-        #     root.evaluate()
-        #     print(root)
-        # except SemanticError:
-        #     print("SEMANTIC ERROR")
-        # except:
-        #     print("SEMANTIC ERROR")
-        # return
 
     if mode == '-E':
-
         try:
 
             ENV.clear()

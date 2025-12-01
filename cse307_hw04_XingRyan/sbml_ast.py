@@ -10,39 +10,7 @@ class SemanticError(Exception):
   def __repr__(self):
     return "SEMANTIC ERROR"
   
-class EnvStack:
-  def __init__(self):
-    self.stack = [dict()]
-  
-  def push(self):
-    self.stack.append(dict())
-  
-  def pop(self):
-    if len(self.stack) == 1:
-      raise SemanticError("SEMANTIC ERROR")
-    self.stack.pop()
-
-  def clear(self):
-    self.stack = [dict()]
-
-  def __contains__(self, name):
-    for frame in reversed(self.stack):
-      if name in frame: 
-        return True
-    return False
-  
-  def __getitem__(self, name):
-    for frame in reversed(self.stack):
-      if name in frame:
-        return frame[name]
-    raise SemanticError("SEMANTIC ERROR")
-  
-  def __setitem__(self, name, value):
-    self.stack[-1][name] = value
-
-
-ENV = EnvStack()
-FUNCTIONS = {}
+ENV = {}
 
 #type check helper methods 
 def _is_int(x): return isinstance(x, int) and not isinstance(x, bool)
@@ -84,93 +52,10 @@ class Block(Node):
     pc = self.parentCount()
     lines = [tabs(pc) + "Block{"]
     for s in self.statements:
-      lines.append(str(s))
+        lines.append(str(s))
     lines.append(tabs(pc) + "}")
     return "\n".join(lines)
   
-class Program(Node):
-  def __init__(self, func_defs, main_block):
-    super().__init__()
-    self.func_defs = func_defs or []
-    self.main_block = main_block
-    for f in self.func_defs:
-      f.parent = self
-    self.main_block.parent=self
-
-  def evaluate(self):
-    FUNCTIONS.clear()
-    for f in self.func_defs:
-      if f.name in FUNCTIONS:
-        raise SemanticError("SEMANTIC ERROR")
-      FUNCTIONS[f.name] = f
-    return self.main_block.evaluate()
-
-  def __str__(self):
-    pc = self.parentCount()
-    lines = [tabs(pc) + "Program"]
-    for f in self.func_defs:
-      lines.append(str(f))
-    lines.append(str(self.main_block))
-    return "\n".join(lines)
-
-class FunctionDef(Node):
-  def __init__(self, name, params, block, return_expr):
-    super().__init__()
-    self.name = name
-    self.params = params
-    self.block = block
-    self.return_expr = return_expr
-    self.block.parent = self
-    self.return_expr.parent = self
-
-  def evaluate(self):
-    FUNCTIONS[self.name] = self
-
-  def __str__(self):
-    pc = self.parentCount()
-    header = tabs(pc) + f"FunctionDef({self.name}, params={self.params})"
-    return "\n".join([header, str(self.block), str(self.return_expr)])
-  
-class FunctionCall(Node):
-  def __init__(self, name, args):
-    super().__init__()
-    self.name = name
-    self.args = args or []
-    for a in self.args:
-      a.parent = self
-  
-  def evaluate(self):
-    if self.name not in FUNCTIONS:
-      raise SemanticError("SEMANTIC ERROR")
-    func_def = FUNCTIONS[self.name]
-
-    if len(self.args) != len(func_def.params):
-      raise SemanticError("SEMANTIC ERROR")
-    
-    arg_values = [arg.evaluate() for arg in self.args]
-
-    ENV.push()
-    try:
-      for param_name, arg_value in zip(func_def.params, arg_values):
-        ENV[param_name] = arg_value
-
-      func_def.block.evaluate()
-      result = func_def.return_expr.evaluate()
-    finally:
-      ENV.pop()
-
-    return result
-  
-  def __str__(self):
-    pc = self.parentCount()
-    lines = [tabs(pc) + f"FunctionCall({self.name})"]
-    for a in self.args:
-      lines.append(str(a))
-    return "\n".join(lines)
-    
-
-
-
 class Int(Node):
   def __init__(self, v): 
     super().__init__()

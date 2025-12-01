@@ -1,4 +1,15 @@
+fun factorial(n) =
 {
-  t = (1, 2, 3);
-  print(#1(t));
+if (n < 1)
+{
+output = 1;
+}
+else
+{
+output = n * factorial(n - 1);
+}
+}
+output;
+{
+print(factorial(3));
 }

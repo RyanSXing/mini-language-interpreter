@@ -1,0 +1,14 @@
+{
+  n = 20;
+  nsub2 = 0;
+  nsub1 = 1;
+  i = 1;
+  while (i < n)
+  {
+    temp = nsub1 + nsub2;
+    nsub2 = nsub1;
+    nsub1 = temp;
+    i = i + 1;
+  }
+  print(nsub1);
+}

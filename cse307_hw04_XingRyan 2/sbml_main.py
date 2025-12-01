@@ -57,7 +57,6 @@ def main():
         # return
 
     if mode == '-E':
-
         try:
 
             ENV.clear()
